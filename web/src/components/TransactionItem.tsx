@@ -6,7 +6,7 @@ export function TransactionItem({ transaction: t }: { transaction: TransactionVi
     <li className="flex items-center justify-between gap-3 py-2.5">
       <div className="min-w-0">
         <p className="truncate text-sm font-medium">{t.description}</p>
-        <p className="text-xs text-zinc-500">
+        <p className="truncate text-xs text-zinc-500">
           {t.categoryLabel} · {t.dateLabel}
         </p>
       </div>
