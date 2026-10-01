@@ -3,7 +3,7 @@
 **Your finances, just chat.**
 
 Expense GPT is a conversational personal finance app. Tell it what happened
-("spent 850 on dinner", "Ali paid me 5k", "how much did I spend on food?") and it
+("spent 850 on dinner", "got 50k salary", "how much did I spend on food?") and it
 records, organizes and reports your money. No forms, no accounting jargon.
 
 > Chat → Record → Understand → Report
@@ -13,18 +13,45 @@ records, organizes and reports your money. No forms, no accounting jargon.
 
 ## Stack
 
-| Layer   | Choice                                  |
-|---------|-----------------------------------------|
-| Mobile  | React Native (Expo) + TypeScript        |
-| API     | ASP.NET Core Web API (.NET)             |
-| Data    | PostgreSQL                              |
-| AI      | LLM used only as a structured extractor |
+| Layer         | Choice                                                    |
+|---------------|-----------------------------------------------------------|
+| Web app + API | Next.js (App Router) + TypeScript                         |
+| Database      | PostgreSQL + Drizzle ORM                                  |
+| AI            | Claude via the Anthropic SDK, used only as an extractor   |
+| Mobile        | Expo React Native, later, against the same API            |
 
-## First goal
+## Status: Phase 0 (vertical slice)
 
-One vertical slice, end to end, before anything else:
+`"I spent 850 on dinner"` → `POST /api/chat` → extraction → validation →
+PostgreSQL → `✓ Added Rs. 850 expense · Food · Dinner · Today`
 
-`"I spent 850 on dinner"` → API → AI extraction → validation → PostgreSQL →
-`✓ Added Rs. 850 · Food · Dinner · Today`
+What works today:
 
-If that feels instant and natural, build the rest around it.
+- Dashboard: balance, this month's income and expenses, chat box, recent transactions, Undo.
+- Record expenses and income in free-form English or Roman Urdu (`850 ka dinner`, `kal 500 ki chai`),
+  with shorthand amounts (`5k`, `2 lakh`) and dates (`yesterday`, `last friday`, `oct 3`).
+- Clarifying questions for missing amounts, vague purchases, and "Ali paid me 5000".
+- Questions answered from SQL: balance, monthly spending (with category breakdown), category spending.
+- One fixed demo user (no auth yet).
+
+## Run it locally
+
+```bash
+docker compose up -d                 # Postgres on :5432 (or use your own)
+cd web
+cp .env.example .env.local           # add ANTHROPIC_API_KEY to use Claude (optional)
+npm install
+npm run db:migrate
+npm run dev                          # http://localhost:3000
+```
+
+Without `ANTHROPIC_API_KEY`, messages are parsed by the built-in rule-based
+extractor, which covers the common phrasings. With a key, Claude interprets the
+message (typos, unusual wording) and the same backend rules validate the result.
+
+## Checks
+
+```bash
+cd web
+npm run lint && npm run typecheck && npm test && npm run build
+```

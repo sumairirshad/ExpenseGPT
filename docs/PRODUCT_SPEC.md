@@ -280,19 +280,32 @@ Chat response:
 
 ---
 
-## 9. Mobile app (React Native + Expo, TypeScript)
+## 9. Stack and clients
+
+One language end to end: **TypeScript**.
+
+| Layer | Choice |
+|-------|--------|
+| Web app + API | Next.js (App Router) — route handlers serve `/api/*` |
+| Database | PostgreSQL via Drizzle ORM (SQL migrations in `web/drizzle/`) |
+| AI | Anthropic TypeScript SDK, structured outputs; rule-based parser as fallback |
+| Validation | Zod (request bodies and the AI extraction contract) |
+| Tests | Vitest |
+| Mobile (later) | Expo React Native calling the same API, sharing types |
+
+**Web first.** The Next.js app is the first client: mobile-first layout, installable to the home screen, so real users can test before app-store work. The Expo app follows once the chat flow is proven.
 
 ```
-src/
-  screens/     Dashboard · Transactions · Reports · Settings · Profile · Auth
-  components/  BalanceCard · ChatInput · ChatBubble · TransactionItem
-               MonthlySummary · CategoryChart · SuggestionChips
-  services/    api.ts · auth.ts · chat.ts
-  models/      Transaction.ts · User.ts · Report.ts · ChatResponse.ts
-  navigation/  hooks/  utils/ (money, dates)
+web/src/
+  app/         page.tsx (Dashboard) · api/chat · api/dashboard · api/transactions/[id]
+  components/  Dashboard · ChatInput · TransactionItem
+  lib/ai/      schema.ts (extraction contract) · claude.ts · rules.ts · extract.ts
+  lib/chat/    service.ts (validate → act → template reply) · drizzle-store.ts
+  lib/         money.ts · dates.ts · categories.ts · dashboard.ts
+  db/          schema.ts · index.ts
 ```
 - Dashboard is the home screen and the only place needed to record anything.
-- State: TanStack Query for server state; secure token storage (Keychain/Keystore).
+- Mobile (later): TanStack Query for server state; secure token storage (Keychain/Keystore).
 - Money formatting via `Intl.NumberFormat` with the user's currency; never do math on formatted strings.
 - Offline: queue the message and show "will send when you're back online" (V1.1).
 
@@ -334,14 +347,14 @@ Targets for V1 launch:
 | p50 end-to-end latency (message → confirmation) | < 1.5 s |
 | p95 latency | < 3 s |
 
-Also: unit tests for date/amount parsing and report SQL, integration tests with Postgres (Testcontainers), cross-user isolation tests.
+Also: unit tests for date/amount parsing and report SQL, integration tests against a real Postgres, cross-user isolation tests.
 
 ---
 
 ## 13. Roadmap
 
 **Phase 0 — Vertical slice (first goal)**
-Expo app with one screen + input → `POST /api/chat` → LLM extraction → validation → PostgreSQL → `✓ Added Rs. 850 Food expense`. Fixed demo user, no auth. Build the eval set alongside. *Exit criterion: it feels instant and natural.*
+Next.js dashboard with one input → `POST /api/chat` → LLM extraction → validation → PostgreSQL → `✓ Added Rs. 850 expense · Food · Dinner · Today`. Fixed demo user, no auth. Build the eval set alongside. *Exit criterion: it feels instant and natural.* **Status:** slice built in `web/`; the ~200-message eval set is still to do.
 
 **Phase 1 — Foundation:** auth, user/timezone/currency, migrations, CI.
 **Phase 2 — Transactions:** list, edit, delete, undo, categories.
@@ -349,7 +362,7 @@ Expo app with one screen + input → `POST /api/chat` → LLM extraction → val
 **Phase 4 — Dashboard:** balance/income/expenses, recent, suggestions, optimistic UI.
 **Phase 5 — Reports:** monthly report, charts, share.
 **Phase 6 — Beta:** error handling, security review, privacy policy, terms, crash monitoring, analytics, user testing.
-**Phase 7 — Launch:** Play Store, App Store, landing page, free plan, Pro subscription, feedback loop.
+**Phase 7 — Launch:** web launch, then the Expo app on Play Store / App Store, landing page, free plan, Pro subscription, feedback loop.
 
 ---
 
