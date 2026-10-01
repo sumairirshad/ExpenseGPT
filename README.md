@@ -17,7 +17,7 @@ records, organizes and reports your money. No forms, no accounting jargon.
 |---------------|-----------------------------------------------------------|
 | Web app + API | Next.js (App Router) + TypeScript                         |
 | Database      | PostgreSQL + Drizzle ORM                                  |
-| AI            | Claude via the Anthropic SDK, used only as an extractor   |
+| AI            | Claude or OpenAI, used only as an extractor               |
 | Mobile        | Expo React Native, later, against the same API            |
 
 ## Status: Phase 0 (vertical slice)
@@ -39,15 +39,19 @@ What works today:
 ```bash
 docker compose up -d                 # Postgres on :5432 (or use your own)
 cd web
-cp .env.example .env.local           # add ANTHROPIC_API_KEY to use Claude (optional)
+cp .env.example .env.local           # add ANTHROPIC_API_KEY and/or OPENAI_API_KEY (optional)
 npm install
 npm run db:migrate
 npm run dev                          # http://localhost:3000
 ```
 
-Without `ANTHROPIC_API_KEY`, messages are parsed by the built-in rule-based
-extractor, which covers the common phrasings. With a key, Claude interprets the
-message (typos, unusual wording) and the same backend rules validate the result.
+Without `ANTHROPIC_API_KEY` or `OPENAI_API_KEY`, messages are parsed by the
+built-in rule-based extractor, which covers the common phrasings. With a key,
+Claude or OpenAI interprets the message (typos, unusual wording) and the same
+backend rules validate the result. Claude is tried first when both keys are
+set; set `AI_PROVIDER=openai` to prefer OpenAI instead. If the preferred
+provider's call fails, the other configured provider is tried before falling
+back to the rule-based parser.
 
 ## Checks
 
