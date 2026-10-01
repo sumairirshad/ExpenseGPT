@@ -18,7 +18,7 @@ records, organizes and reports your money. No forms, no accounting jargon.
 | Web app + API | Next.js (App Router) + TypeScript                         |
 | Database      | PostgreSQL + Drizzle ORM                                  |
 | AI            | Claude via the Anthropic SDK, used only as an extractor   |
-| Mobile        | Expo React Native, later, against the same API            |
+| Mobile        | Expo React Native + TypeScript, calling the same API      |
 
 ## Status: Phase 0 (vertical slice)
 
@@ -49,9 +49,23 @@ Without `ANTHROPIC_API_KEY`, messages are parsed by the built-in rule-based
 extractor, which covers the common phrasings. With a key, Claude interprets the
 message (typos, unusual wording) and the same backend rules validate the result.
 
+## Run the mobile app
+
+```bash
+cd mobile
+cp .env.example .env                 # point EXPO_PUBLIC_API_URL at the web server above
+npm install
+npm start                            # scan the QR code with Expo Go — no Android Studio/Xcode needed
+```
+
+See [`mobile/README.md`](mobile/README.md) for emulator/simulator URLs and details.
+
 ## Checks
 
 ```bash
 cd web
 npm run lint && npm run typecheck && npm test && npm run build
+
+cd ../mobile
+npm run lint && npm run typecheck
 ```

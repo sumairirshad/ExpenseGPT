@@ -291,9 +291,9 @@ One language end to end: **TypeScript**.
 | AI | Anthropic TypeScript SDK, structured outputs; rule-based parser as fallback |
 | Validation | Zod (request bodies and the AI extraction contract) |
 | Tests | Vitest |
-| Mobile (later) | Expo React Native calling the same API, sharing types |
+| Mobile | Expo React Native + Expo Router, calling the same API |
 
-**Web first.** The Next.js app is the first client: mobile-first layout, installable to the home screen, so real users can test before app-store work. The Expo app follows once the chat flow is proven.
+**Web first.** The Next.js app is the first client: mobile-first layout, installable to the home screen, so real users can test before app-store work. The Expo app (`mobile/`) mirrors the same dashboard/chat/Undo flow against the same `/api/*` routes — no mobile-only backend. It has no auth yet either (same fixed demo user); EAS builds and app-store submission are still to do.
 
 ```
 web/src/
@@ -303,6 +303,11 @@ web/src/
   lib/chat/    service.ts (validate → act → template reply) · drizzle-store.ts
   lib/         money.ts · dates.ts · categories.ts · dashboard.ts
   db/          schema.ts · index.ts
+
+mobile/src/
+  app/         _layout.tsx · index.tsx (Dashboard screen)
+  components/  ChatInput · TransactionItem
+  lib/         api.ts (fetch client) · types.ts · money.ts · theme.ts
 ```
 - Dashboard is the home screen and the only place needed to record anything.
 - Mobile (later): TanStack Query for server state; secure token storage (Keychain/Keystore).
