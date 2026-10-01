@@ -41,9 +41,19 @@ docker compose up -d                 # Postgres on :5432 (or use your own)
 cd web
 cp .env.example .env.local           # add ANTHROPIC_API_KEY and/or OPENAI_API_KEY (optional)
 npm install
-npm run db:migrate
 npm run dev                          # http://localhost:3000
 ```
+
+No separate migration step: on startup the app itself creates the
+`expensegpt` database if it doesn't exist yet on the Postgres server
+`DATABASE_URL` points to, then applies any migration under `drizzle/` it
+hasn't run yet — a fresh database gets every table, and an existing one
+only gets whatever's missing (a new column, a new table). This runs once
+when the Next.js server boots (`src/instrumentation.ts` →
+`src/db/migrate.ts`), before it accepts requests. If Postgres itself isn't
+running yet, it logs a hint to run `docker compose up -d` and starts
+anyway, instead of crashing. `npm run db:migrate` still works directly
+(e.g. in CI, or to apply migrations without starting the app).
 
 Without `ANTHROPIC_API_KEY` or `OPENAI_API_KEY`, messages are parsed by the
 built-in rule-based extractor, which covers the common phrasings. With a key,
