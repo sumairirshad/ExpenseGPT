@@ -48,7 +48,8 @@ export default function DashboardScreen() {
     try {
       setData(await fetchDashboard());
       setLoadError(false);
-    } catch {
+    } catch (err) {
+      console.error("Failed to load dashboard:", err);
       setLoadError(true);
     }
   }, []);
@@ -86,7 +87,8 @@ export default function DashboardScreen() {
       setNow(repliedAt);
       update(id, { reply, repliedAt });
       if (reply.status === "saved") void refresh();
-    } catch {
+    } catch (err) {
+      console.error("Failed to send chat message:", err);
       update(id, { error: "Couldn't reach Expense GPT. Please try again." });
     }
     inputRef.current?.focus();
