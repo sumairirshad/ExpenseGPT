@@ -3,7 +3,7 @@ import type { ChatReply, Dashboard } from "./types";
 // Set in `.env` (see `.env.example`). Must point at a reachable Expense GPT
 // web server: your machine's LAN IP for a physical device, 10.0.2.2 for the
 // Android emulator, localhost for iOS simulator / `expo start --web`.
-const API_URL = process.env.EXPO_PUBLIC_API_URL;
+const API_URL = process.env.EXPO_PUBLIC_API_URL?.replace(/\/+$/, "");
 
 class ApiConfigError extends Error {
   constructor() {
