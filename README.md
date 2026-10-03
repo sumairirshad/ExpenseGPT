@@ -19,6 +19,8 @@ records, organizes and reports your money. No forms, no accounting jargon.
 | Database      | PostgreSQL + Drizzle ORM                                  |
 | AI            | Claude or OpenAI, used only as an extractor               |
 | Mobile        | Expo React Native, later, against the same API            |
+| AI            | Claude via the Anthropic SDK, used only as an extractor   |
+| Mobile        | Expo React Native + TypeScript, calling the same API      |
 
 ## Status: Phase 0 (vertical slice)
 
@@ -63,9 +65,23 @@ set; set `AI_PROVIDER=openai` to prefer OpenAI instead. If the preferred
 provider's call fails, the other configured provider is tried before falling
 back to the rule-based parser.
 
+## Run the mobile app
+
+```bash
+cd mobile
+cp .env.example .env                 # point EXPO_PUBLIC_API_URL at the web server above
+npm install
+npm start                            # scan the QR code with Expo Go — no Android Studio/Xcode needed
+```
+
+See [`mobile/README.md`](mobile/README.md) for emulator/simulator URLs and details.
+
 ## Checks
 
 ```bash
 cd web
 npm run lint && npm run typecheck && npm test && npm run build
+
+cd ../mobile
+npm run lint && npm run typecheck
 ```

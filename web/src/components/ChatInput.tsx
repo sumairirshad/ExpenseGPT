@@ -38,13 +38,13 @@ export function ChatInput({ ref, value, onChange, onSend }: Props) {
         }}
         placeholder="I spent 850 on dinner…"
         aria-label="Message"
-        className="max-h-32 min-h-10 flex-1 resize-none bg-transparent px-2 py-2 text-base outline-none placeholder:text-zinc-400"
+        className="max-h-32 min-h-11 min-w-0 flex-1 resize-none bg-transparent px-2 py-2 text-base outline-none placeholder:text-zinc-400"
       />
       <button
         type="submit"
         disabled={!value.trim()}
         aria-label="Send"
-        className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-zinc-900 text-white transition disabled:opacity-30 dark:bg-zinc-100 dark:text-zinc-900"
+        className="flex size-11 shrink-0 items-center justify-center rounded-xl bg-zinc-900 text-white transition disabled:opacity-30 dark:bg-zinc-100 dark:text-zinc-900"
       >
         <svg viewBox="0 0 20 20" fill="currentColor" className="size-5" aria-hidden>
           <path d="M3.1 2.3a.75.75 0 0 1 .82-.05l13.5 7a.75.75 0 0 1 0 1.33l-13.5 7A.75.75 0 0 1 2.85 16.8L4.6 10 2.85 3.2a.75.75 0 0 1 .25-.9ZM6.03 10.75l-1.2 4.6L14.6 10 4.83 4.65l1.2 4.6h4.72a.75.75 0 0 1 0 1.5H6.03Z" />
