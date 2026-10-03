@@ -1,6 +1,7 @@
 import { sql } from "drizzle-orm";
 import {
   bigint,
+  boolean,
   check,
   date,
   index,
@@ -45,6 +46,21 @@ export const chatMessages = pgTable(
   ],
 );
 
+/** Finance categories for manual (Debit/Credit) entries. 12 defaults are seeded per user; see src/lib/finance-categories.ts. */
+export const categories = pgTable(
+  "categories",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    userId: uuid("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+    /** Lower-case, hyphenated; unique per user so duplicate names are rejected. */
+    slug: text("slug").notNull(),
+    label: text("label").notNull(),
+    isDefault: boolean("is_default").notNull().default(false),
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [uniqueIndex("categories_user_slug_uq").on(t.userId, t.slug)],
+);
+
 export const transactions = pgTable(
   "transactions",
   {
@@ -76,3 +92,4 @@ export const transactions = pgTable(
 
 export type UserRow = typeof users.$inferSelect;
 export type TransactionRow = typeof transactions.$inferSelect;
+export type CategoryRow = typeof categories.$inferSelect;

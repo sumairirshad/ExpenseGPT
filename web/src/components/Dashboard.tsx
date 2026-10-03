@@ -4,8 +4,11 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import type { ChatReply } from "@/lib/chat/types";
 import type { Dashboard as DashboardData } from "@/lib/dashboard";
 import { formatMoney } from "@/lib/money";
+import type { TransactionType } from "@/lib/categories";
 import { ChatInput } from "./ChatInput";
+import { ExpandableMessage } from "./ExpandableMessage";
 import { TransactionItem } from "./TransactionItem";
+import { TransactionModal } from "./TransactionModal";
 
 const SUGGESTIONS = ["Spent 500 on lunch", "Received 50,000 salary", "How much did I spend this month?"];
 const UNDO_WINDOW_MS = 30_000;
@@ -29,6 +32,7 @@ export function Dashboard() {
   const [exchanges, setExchanges] = useState<Exchange[]>([]);
   const [draft, setDraft] = useState("");
   const [now, setNow] = useState(() => Date.now());
+  const [modal, setModal] = useState<TransactionType | null>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
 
   const refresh = useCallback(async () => {
@@ -167,7 +171,7 @@ export function Dashboard() {
                     }`}
                     data-testid="reply"
                   >
-                    {e.error ?? (e.undone ? "Removed." : e.reply!.message)}
+                    {e.error ?? (e.undone ? "Removed." : <ExpandableMessage text={e.reply!.message} />)}
                     {e.reply?.status === "saved" && e.repliedAt && now - e.repliedAt < UNDO_WINDOW_MS && (
                       <button
                         type="button"
@@ -187,6 +191,23 @@ export function Dashboard() {
             ))}
           </ol>
         )}
+
+        <div className="flex gap-2">
+          <button
+            type="button"
+            onClick={() => setModal("expense")}
+            className="flex-1 rounded-xl bg-white px-3 py-2 text-sm font-medium text-zinc-700 ring-1 ring-zinc-200 hover:bg-zinc-50 dark:bg-zinc-900 dark:text-zinc-300 dark:ring-zinc-800 dark:hover:bg-zinc-800"
+          >
+            Debit
+          </button>
+          <button
+            type="button"
+            onClick={() => setModal("income")}
+            className="flex-1 rounded-xl bg-white px-3 py-2 text-sm font-medium text-zinc-700 ring-1 ring-zinc-200 hover:bg-zinc-50 dark:bg-zinc-900 dark:text-zinc-300 dark:ring-zinc-800 dark:hover:bg-zinc-800"
+          >
+            Credit
+          </button>
+        </div>
 
         <ChatInput ref={inputRef} value={draft} onChange={setDraft} onSend={send} />
 
@@ -222,6 +243,15 @@ export function Dashboard() {
       </section>
 
       <p className="text-center text-sm text-zinc-400">Monthly report · coming soon</p>
+
+      {modal && (
+        <TransactionModal
+          type={modal}
+          label={modal === "expense" ? "Debit" : "Credit"}
+          onClose={() => setModal(null)}
+          onSaved={() => void refresh()}
+        />
+      )}
     </main>
   );
 }
