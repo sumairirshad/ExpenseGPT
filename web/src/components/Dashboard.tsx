@@ -98,33 +98,45 @@ export function Dashboard() {
   const currency = data?.currency ?? "PKR";
 
   return (
-    <main className="mx-auto flex min-h-dvh w-full max-w-md flex-col gap-5 px-4 py-6">
-      <header className="flex items-center justify-between">
-        <div>
-          <h1 className="text-lg font-semibold tracking-tight">Expense GPT</h1>
-          <p className="text-xs text-zinc-500">Your finances, just chat.</p>
+    <main
+      className="mx-auto flex min-h-dvh w-full max-w-md flex-col gap-4 sm:max-w-lg sm:gap-5 md:max-w-xl lg:max-w-2xl
+        pt-[max(1rem,env(safe-area-inset-top))] pr-[max(0.75rem,env(safe-area-inset-right))]
+        pb-[max(1rem,env(safe-area-inset-bottom))] pl-[max(0.75rem,env(safe-area-inset-left))]
+        sm:pt-[max(2rem,env(safe-area-inset-top))] sm:pr-[max(1.5rem,env(safe-area-inset-right))]
+        sm:pb-[max(2rem,env(safe-area-inset-bottom))] sm:pl-[max(1.5rem,env(safe-area-inset-left))]"
+    >
+      <header className="flex items-center justify-between gap-3">
+        <div className="min-w-0">
+          <h1 className="truncate text-base font-semibold tracking-tight sm:text-lg">Expense GPT</h1>
+          <p className="truncate text-xs text-zinc-500">Your finances, just chat.</p>
         </div>
-        <div aria-hidden className="flex size-9 items-center justify-center rounded-full bg-zinc-200 text-sm font-medium dark:bg-zinc-800">
+        <div
+          aria-hidden
+          className="flex size-9 shrink-0 items-center justify-center rounded-full bg-zinc-200 text-sm font-medium dark:bg-zinc-800"
+        >
           D
         </div>
       </header>
 
-      <section aria-label="Summary" className="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-zinc-200 dark:bg-zinc-900 dark:ring-zinc-800">
+      <section
+        aria-label="Summary"
+        className="rounded-2xl bg-white p-4 shadow-sm ring-1 ring-zinc-200 sm:p-5 dark:bg-zinc-900 dark:ring-zinc-800"
+      >
         <p className="text-sm text-zinc-500">{data?.month ?? " "}</p>
         <p className="mt-3 text-sm text-zinc-500">Balance</p>
-        <p className="text-3xl font-semibold tabular-nums" data-testid="balance">
+        <p className="text-2xl font-semibold tabular-nums break-words sm:text-3xl" data-testid="balance">
           {data ? formatMoney(data.balanceMinor, currency) : "—"}
         </p>
         <div className="mt-4 grid grid-cols-2 gap-3">
-          <div>
+          <div className="min-w-0">
             <p className="text-xs text-zinc-500">Income</p>
-            <p className="font-medium tabular-nums text-emerald-600 dark:text-emerald-400">
+            <p className="truncate font-medium tabular-nums text-emerald-600 dark:text-emerald-400">
               {data ? formatMoney(data.monthIncomeMinor, currency) : "—"}
             </p>
           </div>
-          <div>
+          <div className="min-w-0">
             <p className="text-xs text-zinc-500">Expenses</p>
-            <p className="font-medium tabular-nums text-rose-600 dark:text-rose-400">
+            <p className="truncate font-medium tabular-nums text-rose-600 dark:text-rose-400">
               {data ? formatMoney(data.monthExpenseMinor, currency) : "—"}
             </p>
           </div>
@@ -143,12 +155,12 @@ export function Dashboard() {
           <ol className="flex flex-col gap-2" aria-live="polite">
             {exchanges.map((e) => (
               <li key={e.id} className="flex flex-col gap-1.5">
-                <p className="self-end rounded-2xl rounded-br-sm bg-zinc-900 px-3.5 py-2 text-sm text-white dark:bg-zinc-100 dark:text-zinc-900">
+                <p className="max-w-[85%] self-end rounded-2xl rounded-br-sm bg-zinc-900 px-3.5 py-2 text-sm break-words text-white dark:bg-zinc-100 dark:text-zinc-900">
                   {e.text}
                 </p>
                 {e.reply || e.error ? (
                   <div
-                    className={`self-start rounded-2xl rounded-bl-sm px-3.5 py-2 text-sm whitespace-pre-line ring-1 ${
+                    className={`max-w-[85%] self-start rounded-2xl rounded-bl-sm px-3.5 py-2 text-sm whitespace-pre-line break-words ring-1 ${
                       e.error
                         ? "bg-rose-50 text-rose-700 ring-rose-200 dark:bg-rose-950 dark:text-rose-300 dark:ring-rose-900"
                         : "bg-white ring-zinc-200 dark:bg-zinc-900 dark:ring-zinc-800"
@@ -195,7 +207,10 @@ export function Dashboard() {
         </div>
       </section>
 
-      <section aria-label="Recent transactions" className="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-zinc-200 dark:bg-zinc-900 dark:ring-zinc-800">
+      <section
+        aria-label="Recent transactions"
+        className="rounded-2xl bg-white p-4 shadow-sm ring-1 ring-zinc-200 sm:p-5 dark:bg-zinc-900 dark:ring-zinc-800"
+      >
         <h2 className="text-sm font-medium text-zinc-600 dark:text-zinc-400">Recent transactions</h2>
         {data && data.recent.length === 0 ? (
           <p className="mt-3 text-sm text-zinc-500">Tell me about your first expense or income.</p>
