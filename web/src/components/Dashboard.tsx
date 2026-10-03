@@ -6,6 +6,7 @@ import type { Dashboard as DashboardData } from "@/lib/dashboard";
 import { formatMoney } from "@/lib/money";
 import type { TransactionType } from "@/lib/categories";
 import { ChatInput } from "./ChatInput";
+import { ExpandableMessage } from "./ExpandableMessage";
 import { TransactionItem } from "./TransactionItem";
 import { TransactionModal } from "./TransactionModal";
 
@@ -158,7 +159,7 @@ export function Dashboard() {
                     }`}
                     data-testid="reply"
                   >
-                    {e.error ?? (e.undone ? "Removed." : e.reply!.message)}
+                    {e.error ?? (e.undone ? "Removed." : <ExpandableMessage text={e.reply!.message} />)}
                     {e.reply?.status === "saved" && e.repliedAt && now - e.repliedAt < UNDO_WINDOW_MS && (
                       <button
                         type="button"
