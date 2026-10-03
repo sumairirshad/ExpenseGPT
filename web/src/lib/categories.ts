@@ -53,7 +53,15 @@ export function normaliseCategory(type: TransactionType, proposed: string | null
 }
 
 export function categoryLabel(type: TransactionType, slug: string): string {
-  return categoriesFor(type).find((c) => c.slug === slug)?.label ?? "Other";
+  const known = categoriesFor(type).find((c) => c.slug === slug)?.label;
+  // Slugs this list doesn't know about come from user-created finance
+  // categories (src/lib/finance-categories.ts); humanize rather than hide them.
+  return known ?? humanizeSlug(slug);
+}
+
+function humanizeSlug(slug: string): string {
+  const words = slug.split("-").filter(Boolean);
+  return words.length > 0 ? words.map((w) => w.charAt(0).toUpperCase() + w.slice(1)).join(" ") : "Other";
 }
 
 // Keywords of 5+ letters match as word prefixes ("grocer" → "groceries");
